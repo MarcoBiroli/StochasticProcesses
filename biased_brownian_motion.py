@@ -1,4 +1,5 @@
 from stochastic_process import StochasticProcess
+from sampling import Sampler
 import numpy as np
 import argparse
 import numba
@@ -53,9 +54,6 @@ process = StochasticProcess(update_function=update_function,
 
 print(process)
 
-processes = [process.copy() for _ in range(10)]
+sampler = Sampler(process=process, repeats = 100)
 
-for process_id in numba.prange(10):
-    for _ in range(100000):
-        processes[process_id].update()
-
+sampler.run(100000)

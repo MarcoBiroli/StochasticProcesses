@@ -55,6 +55,8 @@ class StochasticProcess:
             self.result_buffers[observable_name] = np.empty(shape = (self.buffer_size,) + first_observation.shape, dtype = first_observation.dtype)
             self.result_buffer_positions[observable_name] = 0
 
+        self.observable_names = list(self.observables.keys())
+
         self.update_function = update_function
         self.time = 0
         self.time_step = time_step
