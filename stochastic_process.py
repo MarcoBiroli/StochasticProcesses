@@ -108,6 +108,9 @@ class StochasticProcess:
         """
         if new_name is None:
             new_name = self.name + '_copy'
+        kwargs = {}
+        for observable_name, observable in self.observables.items():
+            kwargs[f'observable_{observable_name}'] = observable
         return StochasticProcess(update_function=self.update_function,
                                  time_step=self.time_step,
                                  record_trajectory=self.record_trajectory,
@@ -116,7 +119,8 @@ class StochasticProcess:
                                  variable_number = self.variable_number,
                                  variable_dimension = self.variable_dimension,
                                  initial_variables = deepcopy(self.variables),
-                                 name=new_name)
+                                 name=new_name,
+                                 **kwargs)
 
     def update(self):
         """_summary_

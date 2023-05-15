@@ -3,6 +3,7 @@ from sampling import Sampler
 import numpy as np
 import argparse
 import numba
+import matplotlib.pyplot as plt
 
 def parse():
     parser = argparse.ArgumentParser(description='Simulate critical walkers.')
@@ -56,4 +57,11 @@ print(process)
 
 sampler = Sampler(process=process, repeats = 100)
 
-sampler.run(100000)
+sampler.run(10000)
+
+averages= sampler.get_averages()
+print(averages.keys())
+print(averages)
+
+plt.plot(averages['flux'])
+plt.show()
