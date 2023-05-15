@@ -9,8 +9,11 @@ class Sampler:
     def run(self, nb_steps):
         with ProgressBar(total = self.repeats*nb_steps, leave = False) as progress:
             for i in numba.prange(self.repeats):
-                for _ in range(nb_steps):
-                    self.processes[i].update()
+                for cur_step in range(nb_steps):
+                    flag = self.processes[i].update()
+                    if flag:
+                        progress.update(nb_steps - cur_step)
+                        break
                     progress.update(1)
     
     def get_averages(self):

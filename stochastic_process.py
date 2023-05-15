@@ -26,7 +26,7 @@ class StochasticProcess:
             ValueError: _description_
         """
 
-        if (not('variable_number' in kwargs and 'variable_dimension' in kwargs) and (not 'initial_variables' in kwargs)):
+        if (not('variable_number' in kwargs and 'variable_dimension' in kwargs) and not('initial_variables' in kwargs)):
             raise ValueError('The process cannot be initialized without specifying either \
                              the number of variables and their dimension or the initial variables.')
         
@@ -34,14 +34,19 @@ class StochasticProcess:
             self.variable_number = kwargs['variable_number']
             self.variable_dimension = kwargs['variable_dimension']
             self.variables = np.zeros(shape=(self.variable_number, self.variable_dimension))
+            if 'initial_variable' in kwargs:
+                self.variables = self.variables + kwargs['initial_variable']
 
         if 'initial_variables' in kwargs:
+            assert 'initial_variable' not in kwargs, 'To avoid contradictions do not over-specify the intial state.'
             self.variables = np.array(kwargs['initial_variables'])
             if self.variables.ndim == 1: self.variables = self.variables[..., np.newaxis]
             assert self.variables.ndim == 2, 'Incorrect number of dimensions for the initial variables.'
 
             self.variable_number, self.variable_dimension = self.variables.shape
-
+        
+        self.initial_variables = deepcopy(self.variables)
+        
         if 'name' in kwargs:
             self.name = kwargs['name']
         else:
@@ -122,6 +127,9 @@ class StochasticProcess:
                                  name=new_name,
                                  **kwargs)
 
+    def post_process(self):
+        return None
+
     def update(self):
         """_summary_
         """
@@ -141,6 +149,8 @@ class StochasticProcess:
         else:
             self.buffer[self.buffer_position] = self.variables
             self.buffer_position += 1
+
+        return self.post_process()
 
     
     def measure(self):
@@ -186,3 +196,11 @@ class StochasticProcess:
         self.trajectory = np.concatenate((self.trajectory, self.buffer), axis = 0)
         return {self.time_step * index : value for index, value in enumerate(self.trajectory)}
 
+class EarlyStoppingStochasticProcess(StochasticProcess):
+    def __init__(self, stopping_criterion, **kwargs):
+        super().__init__(**kwargs)
+        self.stopping_crierion = stopping_criterion
+        self.observables['stop'] = stopping_criterion
+    
+    def post_process(self):
+        return self.observables['stop']
