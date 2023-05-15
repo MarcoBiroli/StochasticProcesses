@@ -1,0 +1,7 @@
+biased\_brownian\_motion module
+===============================
+
+.. automodule:: biased_brownian_motion
+   :members:
+   :undoc-members:
+   :show-inheritance:

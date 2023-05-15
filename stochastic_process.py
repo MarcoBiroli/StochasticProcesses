@@ -1,18 +1,30 @@
 from copy import deepcopy
 import numpy as np
 import re
+from collections.abc import Callable
 
 class StochasticProcess:
-    '''
-    ...
-    '''
+    """_summary_
+    """
     def __init__(self, 
-                 update_function, 
-                 time_step, 
-                 record_trajectory = False, 
-                 known_time_steps = None,
-                 buffer_size = 100,
+                 update_function : Callable[[np.ndarray, float], np.ndarray], 
+                 time_step : float, 
+                 record_trajectory : bool = False, 
+                 known_time_steps : int = None,
+                 buffer_size : int = 100,
                  **kwargs):
+        """_summary_
+
+        Args:
+            update_function (Callable[[np.ndarray, float], np.ndarray]): _description_
+            time_step (float): _description_
+            record_trajectory (bool, optional): _description_. Defaults to False.
+            known_time_steps (int, optional): _description_. Defaults to None.
+            buffer_size (int, optional): _description_. Defaults to 100.
+
+        Raises:
+            ValueError: _description_
+        """
 
         if (not('variable_number' in kwargs and 'variable_dimension' in kwargs) and (not 'initial_variables' in kwargs)):
             raise ValueError('The process cannot be initialized without specifying either \
@@ -72,7 +84,7 @@ class StochasticProcess:
 
         self.measure()
 
-    def __str__(self):
+    def __str__(self) -> str:
         return (f'{self.name}\n'
               f'---------------------------- \n'
               f'Number of variables: {self.variable_number} \n'
@@ -85,7 +97,15 @@ class StochasticProcess:
     def __print__(self):
         print(str(self))
 
-    def copy(self, new_name = None):
+    def copy(self, new_name : str = None):
+        """_summary_
+
+        Args:
+            new_name (str, optional): _description_. Defaults to None.
+
+        Returns:
+            _type_: _description_
+        """
         if new_name is None:
             new_name = self.name + '_copy'
         return StochasticProcess(update_function=self.update_function,
@@ -99,6 +119,8 @@ class StochasticProcess:
                                  name=new_name)
 
     def update(self):
+        """_summary_
+        """
         self.variables = self.update_function(
             variables = self.variables,
             time = self.time)
@@ -118,6 +140,8 @@ class StochasticProcess:
 
     
     def measure(self):
+        """_summary_
+        """
         for observable_name, observable in self.observables.items():
             if self.result_buffer_positions[observable_name] == self.buffer_size:
                 self.results[observable_name] = np.concatenate((self.results[observable_name], self.result_buffers[observable_name]), axis = 0)
@@ -126,12 +150,21 @@ class StochasticProcess:
                 self.result_buffers[observable_name][self.result_buffer_positions[observable_name]] = observable(self.variables)
                 self.result_buffer_positions[observable_name] += 1
 
-    def get_result(self, observable_name, times = None):
+    def get_result(self, observable_name : str, times : list[float] | np.ndarray | float = None) -> dict[str, np.ndarray]:
+        """_summary_
+
+        Args:
+            observable_name (str): _description_
+            times (list[float] | np.ndarray | float, optional): _description_. Defaults to None.
+
+        Returns:
+            dict[str, np.ndarray]: _description_
+        """
         result = self.results[observable_name]
         if times is None:
             return result
         
-        if type(times) == int:
+        if type(times) == float:
             assert times in result, f'Requested time, t = {times} has not been computed for {observable_name}.'
             return result[times]
         
@@ -142,7 +175,7 @@ class StochasticProcess:
 
         return out
     
-    def get_trajectory(self):
+    def get_trajectory(self) -> dict[float, np.ndarray]:
         assert self.record_trajectory, 'Cannot retrieve trajectory if it has not been computed.'
         if self.buffer_position != 0:
             self.buffer = self.buffer[:self.buffer_position]
