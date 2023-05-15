@@ -35,8 +35,14 @@ class StochasticProcess:
         else:
             self.name = 'Stochastic process'
         
+        self.buffer_size = buffer_size
+        self.known_time_steps = known_time_steps
+        if not(known_time_steps is None): self.buffer_size = self.known_time_steps + 1
+
         self.observables = {}
         self.results = {}
+        self.result_buffers = {}
+        self.result_buffer_positions = {}
         for key, value in kwargs.items():
             match = re.match(r'(\w+)\_(\w+)', key)
             if not match: continue
@@ -44,18 +50,18 @@ class StochasticProcess:
 
             observable_name = match.group(2)
             self.observables[observable_name] = value
-            self.results[observable_name] = {}
+            first_observation = value(self.variables)
+            self.results[observable_name] = np.empty(shape = (0,) + first_observation.shape, dtype = first_observation.dtype)
+            self.result_buffers[observable_name] = np.empty(shape = (self.buffer_size,) + first_observation.shape, dtype = first_observation.dtype)
+            self.result_buffer_positions[observable_name] = 0
 
         self.update_function = update_function
         self.time = 0
         self.time_step = time_step
 
         self.record_trajectory = record_trajectory
-        self.buffer_size = buffer_size
-        self.known_time_steps = known_time_steps
 
         if self.record_trajectory:
-            if not(known_time_steps is None): self.buffer_size = known_time_steps + 1
             self.buffer = np.empty(shape=(self.buffer_size, self.variable_number, self.variable_dimension), dtype = self.variables.dtype)
             self.buffer[0] = deepcopy(self.variables)
             self.buffer_position = 1
@@ -111,7 +117,12 @@ class StochasticProcess:
     
     def measure(self):
         for observable_name, observable in self.observables.items():
-            self.results[observable_name][self.time] = observable(self.variables)
+            if self.result_buffer_positions[observable_name] == self.buffer_size:
+                self.results[observable_name] = np.concatenate((self.results[observable_name], self.result_buffers[observable_name]), axis = 0)
+                self.result_buffer_positions[observable_name] = 0
+            else:
+                self.result_buffers[observable_name][self.result_buffer_positions[observable_name]] = observable(self.variables)
+                self.result_buffer_positions[observable_name] += 1
 
     def get_result(self, observable_name, times = None):
         result = self.results[observable_name]
