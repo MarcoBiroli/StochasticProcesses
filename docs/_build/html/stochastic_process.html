@@ -42,9 +42,13 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">code</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="biased_brownian_motion.html">biased_brownian_motion module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sampling.html">sampling module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">stochastic_process module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#stochastic_process.EarlyStoppingStochasticProcess"><code class="docutils literal notranslate"><span class="pre">EarlyStoppingStochasticProcess</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#stochastic_process.EarlyStoppingStochasticProcess.copy"><code class="docutils literal notranslate"><span class="pre">EarlyStoppingStochasticProcess.copy()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stochastic_process.EarlyStoppingStochasticProcess.stopping_condition"><code class="docutils literal notranslate"><span class="pre">EarlyStoppingStochasticProcess.stopping_condition()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#stochastic_process.StochasticProcess"><code class="docutils literal notranslate"><span class="pre">StochasticProcess</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#stochastic_process.StochasticProcess.copy"><code class="docutils literal notranslate"><span class="pre">StochasticProcess.copy()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#stochastic_process.StochasticProcess.get_result"><code class="docutils literal notranslate"><span class="pre">StochasticProcess.get_result()</span></code></a></li>
@@ -87,18 +91,61 @@
   <section id="module-stochastic_process">
 <span id="stochastic-process-module"></span><h1>stochastic_process module<a class="headerlink" href="#module-stochastic_process" title="Permalink to this heading"></a></h1>
 <dl class="py class">
+<dt class="sig sig-object py" id="stochastic_process.EarlyStoppingStochasticProcess">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stochastic_process.</span></span><span class="sig-name descname"><span class="pre">EarlyStoppingStochasticProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stopping_criterion</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stochastic_process.html#EarlyStoppingStochasticProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stochastic_process.EarlyStoppingStochasticProcess" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#stochastic_process.StochasticProcess" title="stochastic_process.StochasticProcess"><code class="xref py py-class docutils literal notranslate"><span class="pre">StochasticProcess</span></code></a></p>
+<p>An EarlyStoppingStochasticProcess is a subclass of 
+StochasticProcess which has a special observable
+‘stopping_criterion’ which can be used to interrupt
+the update.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stochastic_process.EarlyStoppingStochasticProcess.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stochastic_process.html#EarlyStoppingStochasticProcess.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stochastic_process.EarlyStoppingStochasticProcess.copy" title="Permalink to this definition"></a></dt>
+<dd><p>Creates a copy of the current EarlyStoppingStochasticProcess.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>new_name (str, optional): 
+If desired specify the new name of the copied process. 
+If left unspecified the name will be set to the current name
+appended with ‘_copy’. Defaults to None.</p>
+</dd>
+<dt>Returns:</dt><dd><p>EarlyStoppingStochasticProcess: The copied process.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stochastic_process.EarlyStoppingStochasticProcess.stopping_condition">
+<span class="sig-name descname"><span class="pre">stopping_condition</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stochastic_process.html#EarlyStoppingStochasticProcess.stopping_condition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stochastic_process.EarlyStoppingStochasticProcess.stopping_condition" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the current value of the stopping criterion</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>bool: Whether we need to stop or not.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="stochastic_process.StochasticProcess">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stochastic_process.</span></span><span class="sig-name descname"><span class="pre">StochasticProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">update_function</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_step</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">record_trajectory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">known_time_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buffer_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stochastic_process.html#StochasticProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stochastic_process.StochasticProcess" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>_summary_</p>
+<p>The StochasticProcess class allows you to model any stochastic process.
+The user simply needs to provide the discrete-time update rule characterizing
+their process. If desired the user can also provide observables to be computed
+as the process evolves.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="stochastic_process.StochasticProcess.copy">
 <span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/stochastic_process.html#StochasticProcess.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stochastic_process.StochasticProcess.copy" title="Permalink to this definition"></a></dt>
-<dd><p>_summary_</p>
+<dd><p>Creates a copy of the current StochasticProcess.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p>new_name (str, optional): _description_. Defaults to None.</p>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>new_name (str, optional): </dt><dd><p>If desired specify the new name of the copied process. 
+If left unspecified the name will be set to the current name
+appended with ‘_copy’. Defaults to None.</p>
 </dd>
-<dt>Returns:</dt><dd><p>_type_: _description_</p>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><p>StochasticProcess: The copied process.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -106,12 +153,22 @@
 <dl class="py method">
 <dt class="sig sig-object py" id="stochastic_process.StochasticProcess.get_result">
 <span class="sig-name descname"><span class="pre">get_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">observable_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/stochastic_process.html#StochasticProcess.get_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stochastic_process.StochasticProcess.get_result" title="Permalink to this definition"></a></dt>
-<dd><p>_summary_</p>
+<dd><p>Get the computed result for a given observable.</p>
 <dl class="simple">
-<dt>Args:</dt><dd><p>observable_name (str): _description_
-times (list[float] | np.ndarray | float, optional): _description_. Defaults to None.</p>
+<dt>Args:</dt><dd><dl class="simple">
+<dt>observable_name (str): </dt><dd><p>The name of the observable we are retrieving results for 
+times (list[float] | np.ndarray | float, optional):  
+If specified we retrieve only the results for the given time 
+or times. If left unspecified we return all the results. Defaults to None.</p>
 </dd>
-<dt>Returns:</dt><dd><p>dict[str, np.ndarray]: _description_</p>
+</dl>
+</dd>
+<dt>Returns:</dt><dd><dl class="simple">
+<dt>dict[str, np.ndarray]: </dt><dd><p>A dictionnary containing the results. The keys are the observation times 
+and the values are the corresponding value of the observable at the given 
+time.</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
@@ -124,13 +181,13 @@ times (list[float] | np.ndarray | float, optional): _description_. Defaults to N
 <dl class="py method">
 <dt class="sig sig-object py" id="stochastic_process.StochasticProcess.measure">
 <span class="sig-name descname"><span class="pre">measure</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stochastic_process.html#StochasticProcess.measure"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stochastic_process.StochasticProcess.measure" title="Permalink to this definition"></a></dt>
-<dd><p>_summary_</p>
+<dd><p>Computes the all the observable on the current variables and time.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="stochastic_process.StochasticProcess.update">
 <span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/stochastic_process.html#StochasticProcess.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#stochastic_process.StochasticProcess.update" title="Permalink to this definition"></a></dt>
-<dd><p>_summary_</p>
+<dd><p>Applies on discrete time step and updates all the observables.</p>
 </dd></dl>
 
 </dd></dl>

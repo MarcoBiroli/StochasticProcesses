@@ -18,7 +18,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="stochastic_process module" href="stochastic_process.html" />
-    <link rel="prev" title="biased_brownian_motion module" href="biased_brownian_motion.html" /> 
+    <link rel="prev" title="code" href="modules.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,8 +43,11 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">code</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="biased_brownian_motion.html">biased_brownian_motion module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">sampling module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sampling.EarlyStoppingSampler"><code class="docutils literal notranslate"><span class="pre">EarlyStoppingSampler</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#sampling.EarlyStoppingSampler.run"><code class="docutils literal notranslate"><span class="pre">EarlyStoppingSampler.run()</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#sampling.Sampler"><code class="docutils literal notranslate"><span class="pre">Sampler</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#sampling.Sampler.get_averages"><code class="docutils literal notranslate"><span class="pre">Sampler.get_averages()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#sampling.Sampler.run"><code class="docutils literal notranslate"><span class="pre">Sampler.run()</span></code></a></li>
@@ -85,18 +88,52 @@
   <section id="module-sampling">
 <span id="sampling-module"></span><h1>sampling module<a class="headerlink" href="#module-sampling" title="Permalink to this heading"></a></h1>
 <dl class="py class">
+<dt class="sig sig-object py" id="sampling.EarlyStoppingSampler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sampling.</span></span><span class="sig-name descname"><span class="pre">EarlyStoppingSampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repeats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sampling.html#EarlyStoppingSampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sampling.EarlyStoppingSampler" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#sampling.Sampler" title="sampling.Sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">Sampler</span></code></a></p>
+<p>The EarlyStoppingSampler class is a simple wrapper allowing to repeat the execution
+of a EarlyStoppingStochasticProcess multiple times in order to compute averages of 
+the observables computed by the EarlyStoppingStochasticProcess.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="sampling.EarlyStoppingSampler.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/sampling.html#EarlyStoppingSampler.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sampling.EarlyStoppingSampler.run" title="Permalink to this definition"></a></dt>
+<dd><p>The run method updates each process for the given number of steps, unless
+the process gets stopped early by it’s stopping condition.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>nb_steps (int): The number of steps to perform for each process.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="sampling.Sampler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sampling.</span></span><span class="sig-name descname"><span class="pre">Sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repeats</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sampling.html#Sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sampling.Sampler" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sampling.</span></span><span class="sig-name descname"><span class="pre">Sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">process</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">repeats</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sampling.html#Sampler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sampling.Sampler" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The Sampler class is a simple wrapper allowing to repeat the execution
+of a StochasticProcess multiple times in order to compute averages of 
+the observables computed by the StochasticProcess.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="sampling.Sampler.get_averages">
-<span class="sig-name descname"><span class="pre">get_averages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/sampling.html#Sampler.get_averages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sampling.Sampler.get_averages" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">get_averages</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/sampling.html#Sampler.get_averages"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sampling.Sampler.get_averages" title="Permalink to this definition"></a></dt>
+<dd><p>Compute the average of the observables of the process.</p>
+<dl class="simple">
+<dt>Returns:</dt><dd><p>dict[str, np.ndarray]: A dictionnary containing the computed
+averages.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="sampling.Sampler.run">
-<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_steps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sampling.html#Sampler.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sampling.Sampler.run" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nb_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/sampling.html#Sampler.run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sampling.Sampler.run" title="Permalink to this definition"></a></dt>
+<dd><p>The run method updates each process for the given number of steps.</p>
+<dl class="simple">
+<dt>Args:</dt><dd><p>nb_steps (int): The number of steps to perform for each process.</p>
+</dd>
+</dl>
+</dd></dl>
 
 </dd></dl>
 
@@ -106,7 +143,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="biased_brownian_motion.html" class="btn btn-neutral float-left" title="biased_brownian_motion module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="code" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="stochastic_process.html" class="btn btn-neutral float-right" title="stochastic_process module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

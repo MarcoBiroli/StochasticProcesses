@@ -1,5 +1,5 @@
 from stochastic_process import EarlyStoppingStochasticProcess
-from sampling import Sampler
+from sampling import EarlyStoppingSampler
 import numpy as np
 import argparse
 import numba
@@ -61,17 +61,17 @@ process = EarlyStoppingStochasticProcess(stopping_criterion = positive_flag,
                                          record_trajectory=args.record_trajectory,
                                          variable_number = args.variable_number,
                                          variable_dimension = args.variable_dimension,
-                                         initial_variable = -5
+                                         initial_variable = -100
                                          )
 
 
 print(process)
 
-sampler = Sampler(process=process, repeats = 1)
+sampler = EarlyStoppingSampler(process=process, repeats = 100)
 
-sampler.run(10000)
+sampler.run(1000000)
 
-averages= sampler.get_averages()
-print(averages.keys())
-print(averages)
+#averages= sampler.get_averages()
+#print(averages.keys())
+#print(averages)
 

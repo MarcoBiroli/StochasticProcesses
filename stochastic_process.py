@@ -4,7 +4,11 @@ import re
 from collections.abc import Callable
 
 class StochasticProcess:
-    """_summary_
+    """
+    The StochasticProcess class allows you to model any stochastic process.
+    The user simply needs to provide the discrete-time update rule characterizing
+    their process. If desired the user can also provide observables to be computed
+    as the process evolves.
     """
     def __init__(self, 
                  update_function : Callable[[np.ndarray, float], np.ndarray], 
@@ -13,17 +17,28 @@ class StochasticProcess:
                  known_time_steps : int = None,
                  buffer_size : int = 100,
                  **kwargs):
-        """_summary_
+        """
+        Initializes an instance of the StochasticProcess class.
 
         Args:
-            update_function (Callable[[np.ndarray, float], np.ndarray]): _description_
-            time_step (float): _description_
-            record_trajectory (bool, optional): _description_. Defaults to False.
-            known_time_steps (int, optional): _description_. Defaults to None.
-            buffer_size (int, optional): _description_. Defaults to 100.
-
-        Raises:
-            ValueError: _description_
+            update_function (Callable[[np.ndarray, float], np.ndarray]): 
+            The discrete time update function of the stochastic process,
+            it should take as arguments the current variables and the current
+            time.
+            time_step (float): 
+            The time discretization step.
+            record_trajectory (bool, optional): 
+            If True the class will keep track of the full trajectory of the process.
+            However this is memory expensive, so only activate it if you need it.
+            Defaults to False.
+            known_time_steps (int, optional): 
+            If you know in advance how many time steps will be exectued setting this 
+            parameter allows the class to speed up memory allocation, which can significantly
+            speed up the computations. Defaults to None.
+            buffer_size (int, optional): 
+            If the number of total time steps is unknown this specifies the size of the buffer
+            used to hold results/trajectory before flushing them to their respective arrays.
+            Defaults to 100.
         """
 
         if (not('variable_number' in kwargs and 'variable_dimension' in kwargs) and not('initial_variables' in kwargs)):
@@ -46,7 +61,7 @@ class StochasticProcess:
             self.variable_number, self.variable_dimension = self.variables.shape
         
         self.initial_variables = deepcopy(self.variables)
-        
+
         if 'name' in kwargs:
             self.name = kwargs['name']
         else:
@@ -103,13 +118,17 @@ class StochasticProcess:
         print(str(self))
 
     def copy(self, new_name : str = None):
-        """_summary_
+        """
+        Creates a copy of the current StochasticProcess.
 
         Args:
-            new_name (str, optional): _description_. Defaults to None.
+            new_name (str, optional): 
+                If desired specify the new name of the copied process. 
+                If left unspecified the name will be set to the current name
+                appended with '_copy'. Defaults to None.
 
         Returns:
-            _type_: _description_
+            StochasticProcess: The copied process.
         """
         if new_name is None:
             new_name = self.name + '_copy'
@@ -127,11 +146,9 @@ class StochasticProcess:
                                  name=new_name,
                                  **kwargs)
 
-    def post_process(self):
-        return None
-
     def update(self):
-        """_summary_
+        """
+        Applies on discrete time step and updates all the observables.
         """
         self.variables = self.update_function(
             variables = self.variables,
@@ -150,11 +167,10 @@ class StochasticProcess:
             self.buffer[self.buffer_position] = self.variables
             self.buffer_position += 1
 
-        return self.post_process()
-
     
     def measure(self):
-        """_summary_
+        """
+        Computes the all the observable on the current variables and time.
         """
         for observable_name, observable in self.observables.items():
             if self.result_buffer_positions[observable_name] == self.buffer_size:
@@ -165,14 +181,21 @@ class StochasticProcess:
                 self.result_buffer_positions[observable_name] += 1
 
     def get_result(self, observable_name : str, times : list[float] | np.ndarray | float = None) -> dict[str, np.ndarray]:
-        """_summary_
+        """
+        Get the computed result for a given observable.
 
         Args:
-            observable_name (str): _description_
-            times (list[float] | np.ndarray | float, optional): _description_. Defaults to None.
+            observable_name (str): 
+                The name of the observable we are retrieving results for 
+                times (list[float] | np.ndarray | float, optional):  
+                If specified we retrieve only the results for the given time 
+                or times. If left unspecified we return all the results. Defaults to None.
 
         Returns:
-            dict[str, np.ndarray]: _description_
+            dict[str, np.ndarray]: 
+                A dictionnary containing the results. The keys are the observation times 
+                and the values are the corresponding value of the observable at the given 
+                time.
         """
         result = self.results[observable_name]
         if times is None:
@@ -197,10 +220,63 @@ class StochasticProcess:
         return {self.time_step * index : value for index, value in enumerate(self.trajectory)}
 
 class EarlyStoppingStochasticProcess(StochasticProcess):
-    def __init__(self, stopping_criterion, **kwargs):
+    """
+    An EarlyStoppingStochasticProcess is a subclass of 
+    StochasticProcess which has a special observable
+    'stopping_criterion' which can be used to interrupt
+    the update.
+    """
+    def __init__(self, 
+                 stopping_criterion : Callable[[np.ndarray], bool], 
+                 **kwargs):
+        """
+        Intializes an instance of the EarlyStoppingStochasticProcess.
+
+        Args:
+            stopping_criterion (Callable[[np.ndarray], bool]): 
+            The stopping criterion is an observable which takes the 
+            current variables and returns a bool specifying if the process
+            must be stopped or not.
+        """
         super().__init__(**kwargs)
-        self.stopping_crierion = stopping_criterion
+        self.stopping_criterion = stopping_criterion
         self.observables['stop'] = stopping_criterion
     
-    def post_process(self):
-        return self.observables['stop']
+    def copy(self, new_name : str = None):
+        """
+        Creates a copy of the current EarlyStoppingStochasticProcess.
+
+        Args:
+            new_name (str, optional): 
+            If desired specify the new name of the copied process. 
+            If left unspecified the name will be set to the current name
+            appended with '_copy'. Defaults to None.
+
+        Returns:
+            EarlyStoppingStochasticProcess: The copied process.
+        """
+        if new_name is None:
+            new_name = self.name + '_copy'
+        kwargs = {}
+        for observable_name, observable in self.observables.items():
+            kwargs[f'observable_{observable_name}'] = observable
+        return EarlyStoppingStochasticProcess(update_function=self.update_function,
+                                 time_step=self.time_step,
+                                 record_trajectory=self.record_trajectory,
+                                 known_time_steps=self.known_time_steps,
+                                 buffer_size=self.buffer_size,
+                                 variable_number = self.variable_number,
+                                 variable_dimension = self.variable_dimension,
+                                 initial_variables = deepcopy(self.variables),
+                                 name=new_name,
+                                 stopping_criterion=self.stopping_criterion,
+                                 **kwargs)
+
+    def stopping_condition(self):
+        """
+        Returns the current value of the stopping criterion
+        
+        Returns:
+            bool: Whether we need to stop or not.
+        """
+        return self.stopping_criterion(self.variables)
